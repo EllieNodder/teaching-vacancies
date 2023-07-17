@@ -51,6 +51,55 @@ dev: ## dev
 		$(eval var_file=$(env))
 		$(eval backend_config=-backend-config="key=$(env)/app.tfstate")
 
+
+.PHONY: development_aks
+development_aks:
+	$(eval include global_config/development.sh)
+
+
+.PHONY: set-key-vault-names
+set-key-vault-names:
+	$(eval KEY_VAULT_APPLICATION_NAME=$(AZURE_RESOURCE_PREFIX)-$(SERVICE_SHORT)-$(CONFIG_SHORT)-app-kv)
+	$(eval KEY_VAULT_INFRASTRUCTURE_NAME=$(AZURE_RESOURCE_PREFIX)-$(SERVICE_SHORT)-$(CONFIG_SHORT)-inf-kv)
+
+
+composed-variables:
+	$(eval RESOURCE_GROUP_NAME=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-rg)
+	$(eval KEYVAULT_NAMES='("${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-app-kv", "${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-inf-kv")')
+	$(eval STORAGE_ACCOUNT_NAME=${AZURE_RESOURCE_PREFIX}${SERVICE_SHORT}tfstate${CONFIG_SHORT}sa)
+
+bin/terrafile: ## Install terrafile to manage terraform modules
+	curl -sL https://github.com/coretech/terrafile/releases/download/v${TERRAFILE_VERSION}/terrafile_${TERRAFILE_VERSION}_$$(uname)_x86_64.tar.gz \
+		| tar xz -C ./bin terrafile
+
+terraform-init-aks: composed-variables bin/terrafile set-azure-account
+	$(if ${IMAGE_TAG}, , $(eval IMAGE_TAG=master))
+
+	./bin/terrafile -p terraform/aks/vendor/modules -f terraform/aks/config/$(CONFIG)_Terrafile
+	terraform -chdir=terraform/aks init -upgrade -reconfigure \
+		-backend-config=resource_group_name=${RESOURCE_GROUP_NAME} \
+		-backend-config=storage_account_name=${STORAGE_ACCOUNT_NAME} \
+		-backend-config=key=${ENVIRONMENT}_kubernetes.tfstate
+
+	$(eval export TF_VAR_azure_resource_prefix=${AZURE_RESOURCE_PREFIX})
+	$(eval export TF_VAR_config_short=${CONFIG_SHORT})
+	$(eval export TF_VAR_service_name=${SERVICE_NAME})
+	$(eval export TF_VAR_service_short=${SERVICE_SHORT})
+	$(eval export TF_VAR_docker_image=${DOCKER_REPOSITORY}:${IMAGE_TAG})
+
+terraform-plan-aks: terraform-init-aks
+	terraform -chdir=terraform/aks plan -var-file "config/${CONFIG}.tfvars.json"
+
+
+terraform-apply-aks: terraform-init-aks
+	terraform -chdir=terraform/aks apply -var-file "config/${CONFIG}.tfvars.json" ${AUTO_APPROVE}
+
+
+terraform-destroy-aks: terraform-init-aks
+	terraform -chdir=terraform/aks destroy -var-file=config/${CONFIG}.tfvars.json ${AUTO_APPROVE}
+
+
+
 .PHONY: review
 review: ## review # Requires `pr_id=NNNN`
 		$(if $(pr_id), , $(error Missing environment variable "pr_id"))
