@@ -13,4 +13,5 @@ module "postgres" {
   use_azure               = var.deploy_azure_backing_services
   azure_enable_monitoring = false
   server_version          = "14"
+  azure_enable_backup_storage  = var.azure_enable_backup_storage
 }

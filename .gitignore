@@ -96,3 +96,5 @@ dump.rdb
 
 # Visual Studio Code
 .vscode
+
+.idea
