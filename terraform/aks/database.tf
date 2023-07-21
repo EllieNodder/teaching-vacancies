@@ -7,10 +7,7 @@ module "postgres" {
   service_name          = var.service_name
   service_short         = var.service_short
   config_short          = var.config_short
-
   cluster_configuration_map = module.cluster_data.configuration_map
-
   use_azure               = var.deploy_azure_backing_services
-  azure_enable_monitoring = false
   azure_enable_backup_storage  = var.azure_enable_backup_storage
 }
