@@ -51,11 +51,14 @@ docker-compose.env
 *.tfstate.backup
 .terraform/environment
 terraform.tfplan
-terraform.tfstate
 terraform.tfstate.d/
 ./*.tfstate
 .terraform/
 .terraform.tfstate.lock.info
+terraform/application/vendor
+terraform/domains/environment_domains/vendor
+terraform.tfstate*
+bin/terrafile
 tokens
 
 # ENV files
@@ -98,3 +101,12 @@ dump.rdb
 .vscode
 
 .idea
+*-export
+/new_service
+
+# devops files
+
+bin/terrafile
+
+# Downloaded terraform modules
+terraform/aks/vendor/

@@ -31,9 +31,6 @@ variable "enable_postgres_ssl" {
   default     = true
   description = "Enforce SSL connection from the client side"
 }
-variable "docker_image" {
-  description = "Docker image full name to identify it in the registry. Includes docker registry, repository and tag e.g.: ghcr.io/dfe-digital/teacher-pay-calculator:673f6309fd0c907014f44d6732496ecd92a2bcd0"
-}
 variable "external_url" {
   default     = null
   description = "Healthcheck URL for StatusCake monitoring"
