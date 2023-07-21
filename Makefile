@@ -51,11 +51,6 @@ dev: ## dev
 		$(eval var_file=$(env))
 		$(eval backend_config=-backend-config="key=$(env)/app.tfstate")
 
-.PHONY: set-key-vault-names
-set-key-vault-names:
-	$(eval KEY_VAULT_APPLICATION_NAME=$(AZURE_RESOURCE_PREFIX)-$(SERVICE_SHORT)-$(CONFIG_SHORT)-app-kv)
-	$(eval KEY_VAULT_INFRASTRUCTURE_NAME=$(AZURE_RESOURCE_PREFIX)-$(SERVICE_SHORT)-$(CONFIG_SHORT)-inf-kv)
-
 bin/terrafile: ## Install terrafile to manage terraform modules
 	curl -sL https://github.com/coretech/terrafile/releases/download/v${TERRAFILE_VERSION}/terrafile_${TERRAFILE_VERSION}_$$(uname)_x86_64.tar.gz \
 		| tar xz -C ./bin terrafile
