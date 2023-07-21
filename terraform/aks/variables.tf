@@ -31,14 +31,6 @@ variable "enable_postgres_ssl" {
   default     = true
   description = "Enforce SSL connection from the client side"
 }
-variable "external_url" {
-  default     = null
-  description = "Healthcheck URL for StatusCake monitoring"
-}
-variable "statuscake_contact_groups" {
-  default     = []
-  description = "ID of the contact group in statuscake web UI"
-}
 variable "enable_monitoring" {
   default     = false
   description = "Enable monitoring and alerting"

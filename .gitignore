@@ -99,13 +99,9 @@ dump.rdb
 
 # Visual Studio Code
 .vscode
-
 .idea
-*-export
-/new_service
 
 # devops files
-
 bin/terrafile
 
 # Downloaded terraform modules
