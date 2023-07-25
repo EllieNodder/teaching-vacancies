@@ -1,5 +1,6 @@
 class ImportFromVacancySourcesJob < ApplicationJob
   SOURCES = [VacancySource::Source::UnitedLearning,
+             VacancySource::Source::Every,
              VacancySource::Source::Fusion,
              VacancySource::Source::MyNewTerm].freeze
 
