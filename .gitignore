@@ -58,7 +58,6 @@ terraform.tfstate.d/
 terraform/application/vendor
 terraform/domains/environment_domains/vendor
 terraform.tfstate*
-bin/terrafile
 tokens
 
 # ENV files
@@ -104,6 +103,3 @@ dump.rdb
 
 # devops files
 bin/terrafile
-
-# Downloaded terraform modules
-terraform/aks/vendor/
