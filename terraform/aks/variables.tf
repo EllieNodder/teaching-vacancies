@@ -39,7 +39,9 @@ variable "azure_enable_backup_storage" {
   default     = true
   description = "Create storage account for database backup"
 }
-
+variable "docker_image" {
+  description = "Docker image full name to identify it in the registry. Includes docker registry, repository and tag e.g.: ghcr.io/dfe-digital/teacher-pay-calculator:673f6309fd0c907014f44d6732496ecd92a2bcd0"
+}
 locals {
   azure_credentials = try(jsondecode(var.azure_credentials_json), null)
 
