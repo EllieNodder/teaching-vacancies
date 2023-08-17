@@ -61,7 +61,7 @@ set-key-vault-names:
 	$(eval KEY_VAULT_INFRASTRUCTURE_NAME=$(AZURE_RESOURCE_PREFIX)-$(SERVICE_SHORT)-$(CONFIG_SHORT)-inf-kv)
 
 terraform-init-aks: composed-variables bin/terrafile set-azure-account
-	$(if ${IMAGE_TAG}, , $(eval IMAGE_TAG=master))
+	$(if ${tag}, , $(eval tag=main))
 
 	./bin/terrafile -p terraform/aks/vendor/modules -f terraform/aks/config/$(CONFIG)_Terrafile
 	terraform -chdir=terraform/aks init -upgrade -reconfigure \
@@ -71,8 +71,10 @@ terraform-init-aks: composed-variables bin/terrafile set-azure-account
 
 	$(eval export TF_VAR_azure_resource_prefix=${AZURE_RESOURCE_PREFIX})
 	$(eval export TF_VAR_config_short=${CONFIG_SHORT})
+	$(eval export TF_VAR_config=${CONFIG})
 	$(eval export TF_VAR_service_name=${SERVICE_NAME})
 	$(eval export TF_VAR_service_short=${SERVICE_SHORT})
+	$(eval export TF_VAR_docker_image=${DOCKER_REPOSITORY}:${tag})
 
 terraform-plan-aks: terraform-init-aks
 	terraform -chdir=terraform/aks plan -var-file "config/${CONFIG}.tfvars.json"
@@ -275,7 +277,7 @@ arm-deployment: composed-variables set-azure-account set-key-vault-names
 		--parameters "resourceGroupName=${RESOURCE_GROUP_NAME}" 'tags=${RG_TAGS}' \
 			"tfStorageAccountName=${STORAGE_ACCOUNT_NAME}" "tfStorageContainerName=terraform-state" \
 			keyVaultNames='("${KEY_VAULT_APPLICATION_NAME}", "${KEY_VAULT_INFRASTRUCTURE_NAME}")' \
-			"enableKVPurgeProtection=${KV_PURGE_PROTECTION}" \
+	    	"enableKVPurgeProtection=${KV_PURGE_PROTECTION}" \
 			${WHAT_IF}
 
 deploy-arm-resources: arm-deployment
