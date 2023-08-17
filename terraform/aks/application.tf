@@ -18,7 +18,7 @@ module "application_configuration" {
     {
       ENVIRONMENT_NAME = var.environment
       PGSSLMODE        = local.postgres_ssl_mode
-      DOMAIN = "teaching-vacancies-${var.environment}.london.cloudapps.digital"
+      DOMAIN = "teaching-vacancies-${var.environment}.${module.cluster_data.ingress_domain}"
   })
   secret_variables = merge(
     yamldecode(data.aws_ssm_parameter.app_env_api_key_big_query.value),
