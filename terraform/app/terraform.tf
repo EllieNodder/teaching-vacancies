@@ -30,7 +30,7 @@ terraform {
     region  = "eu-west-2"
     encrypt = "true"
   }
-
+    experiments = [module_variable_optional_attrs]
 }
 
 module "cloudfront" {

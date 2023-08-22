@@ -17,6 +17,7 @@ terraform {
   backend "azurerm" {
     container_name = "terraform-state"
   }
+  experiments = [module_variable_optional_attrs]
 }
 
 provider "azurerm" {
