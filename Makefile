@@ -172,7 +172,10 @@ ci:	## Run in automation environment
 
 .PHONY: terraform-app-init
 terraform-app-init:
-		terraform -chdir=terraform/app init -reconfigure -input=false $(backend_config)
+	./bin/terrafile -p terraform/app/vendor/modules -f terraform/workspace-variables/$(var_file)_Terrafile
+	terraform -chdir=terraform/app init -reconfigure -input=false $(backend_config)
+
+
 
 .PHONY: terraform-app-plan
 terraform-app-plan: terraform-app-init check-terraform-variables ## make passcode=MyPasscode tag=dev-08406f04dd9eadb7df6fcda5213be880d7df37ed-20201022090714 <env> terraform-app-plan
